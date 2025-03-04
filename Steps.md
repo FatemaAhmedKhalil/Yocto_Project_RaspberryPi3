@@ -67,7 +67,7 @@ yocto
 
 ### Initialize the Build Environment  
 Run the following command inside the `poky` directory to set up the build environment:  
-```
+```bash
 source oe-init-build-env build-raspberrypi3-32
 ```
 This creates a `build` directory and sets up the necessary environment variables.  
