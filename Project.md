@@ -264,7 +264,7 @@ inherit audio
 ``` 
 
 **Package Installation** 
-`IMAGE_INSTALL: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
+`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
 
 **Image Features** 
 `IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
