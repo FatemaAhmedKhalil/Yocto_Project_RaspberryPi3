@@ -449,6 +449,7 @@ Modify renders/CMakeLists.txt to replace `/opt/vc` with `/usr/`.
 Generate a patch:
 ```bach
 bitbake -c devshell rpi-play
+git diff > 0001_include_dir.patch
 ``` 
 change each  `/opt/vc` with  `/usr/`
 
