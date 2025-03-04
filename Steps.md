@@ -1,7 +1,7 @@
-### BitBake Workflow
-# Overview
+# BitBake Workflow
+### Overview
 BitBake is a build engine used in the Yocto Project to automate the process of building Linux distributions and applications. Below is a step-by-step breakdown of the BitBake workflow.
-# Workflow Steps
+### Workflow Steps
 1. **Create `bitbake.lock`** → Ensures that only one instance of BitBake runs at a time, preventing conflicts.  
 2. **Read `build/conf/bblayers.conf`** → Specifies the layers included in the build, such as `meta-openembedded` and `meta-yocto`.  
 3. **Read `build/conf/local.conf`** → Contains user-specific configurations, including `MACHINE`, `DISTRO`, and `IMAGE_FSTYPES`.  
@@ -9,7 +9,7 @@ BitBake is a build engine used in the Yocto Project to automate the process of b
 
 ---
 
-### BitBake Layers
+# BitBake Layers
 - **`meta-poky`** → Provides the Poky reference distribution.  
 - **`meta-yocto-bsp`** → Contains Board Support Packages (BSPs) for reference hardware.  
 - **`meta-raspberrypi`** → Adds support for Raspberry Pi boards.  
@@ -25,7 +25,7 @@ BitBake is a build engine used in the Yocto Project to automate the process of b
 
 ---
 
-### Setting Up the Environment  
+# Setting Up the Environment  
 Before using BitBake, ensure your system meets the necessary dependencies. For Ubuntu, install the required packages:  
 ```bash
 sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping \
@@ -40,7 +40,7 @@ locale --all-locales | grep en_US.utf8
 
 ---
 
-### Download and Configure Poky  
+# Download and Configure Poky  
 Poky is the reference build system for the Yocto Project. To set it up:  
 ```bash
 git clone https://github.com/yoctoproject/poky.git
@@ -51,7 +51,7 @@ For more details, refer to the [Poky directory structure](https://docs.yoctoproj
 
 ---
 
-### Directory Structure  
+# Directory Structure  
 For better organization, follow this structure:  
 ```
 yocto
@@ -65,7 +65,7 @@ yocto
 
 ---
 
-### Initialize the Build Environment  
+# Initialize the Build Environment  
 Run the following command inside the `poky` directory to set up the build environment:  
 ```bash
 source oe-init-build-env build-raspberrypi3-32
@@ -74,7 +74,7 @@ This creates a `build` directory and sets up the necessary environment variables
 
 ---
 
-### Configure Local Build Settings  
+# Configure Local Build Settings  
 Edit `local.conf` inside `build-raspberrypi3-32/conf/` to customize the build for the target hardware:  
 ```bash
 MACHINE ?= "raspberrypi3"
