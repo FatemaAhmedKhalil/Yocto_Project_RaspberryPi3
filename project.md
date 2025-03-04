@@ -581,40 +581,38 @@ BBFILE_PRIORITY_meta-IVI = "8"
 create the following directory structure inside your custom layer:
 ```bash
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
-touch -p meta-IVI/recipes-connectivity/vsomeip/vsomeip_1.0.bb
+recipetool create -o vsomeip_1.0.bb  https://github.com/COVESA/vsomeip.git
 ```
 Edit `vsomeip_1.0.bb`:
 ```bash
-SUMMARY = "The implementation of SOME/IP"
-SECTION = "base"
-LICENSE = "MPLv2"
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
+# your responsibility to verify that the values are complete and correct.
+#
+# The following license files were not able to be identified and are
+# represented as "Unknown" below, you will need to check them yourself:
+#   LICENSE
+LICENSE = "Unknown"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9741c346eef56131163e13b9db1241b3"
 
-DEPENDS = "boost dlt-daemon"
-FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+SRC_URI = "git://github.com/COVESA/vsomeip.git;protocol=https;branch=master"
 
-SRC_URI = "git://github.com/GENIVI/${BPN}.git;protocol=https"
-
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
 SRCREV = "d58421766206ec7fa2084d2fe01841b5b0d8aeb5"
 
 S = "${WORKDIR}/git"
 
-inherit cmake lib_package gitpkgv
+# NOTE: unable to map the following CMake package dependencies: Doxygen benchmark
+DEPENDS = "boost systemd"
+
+inherit cmake pkgconfig
 
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 EXTRA_OECMAKE = ""
-TARGET_LDFLAGS += "-Wl,--copy-dt-needed-entries"
-EXTRA_OEMAKE:append = " LDFLAGS='${TARGET_LDFLAGS}'"
-
-PACKAGES:remove = "${PN}-bin"
-FILES:${PN} += "${bindir}/vsomeipd ${sysconfdir}/${BPN}"
-FILES:${PN}-dev += "${libdir}/cmake"
-
-BBCLASSEXTEND = "nativesdk"
-
-do_install:append() {
-   mv ${D}/usr/etc ${D}
-}
 ```
 
 ---
