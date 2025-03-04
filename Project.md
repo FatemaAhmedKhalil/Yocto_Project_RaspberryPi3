@@ -3,11 +3,10 @@
 ## Overview
 This guide provides a step-by-step breakdown of The Project.
 
-## BitBake Steps
-1. **Create `bitbake.lock`** → Ensures only one BitBake instance runs at a time, preventing conflicts.
-2. **Read `build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
-3. **Read `build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`, `IMAGE_FSTYPES`).
-4. **Read `meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
+## BitBake 
+1. **`build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
+2. **`build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`, `IMAGE_FSTYPES`).
+3. **`meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
 
 ---
 
