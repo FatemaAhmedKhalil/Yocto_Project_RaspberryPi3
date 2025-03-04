@@ -1,12 +1,12 @@
 ## Overview
 This guide provides a step-by-step breakdown of The Project.
 
+---
+
 ## BitBake 
 1. **`build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
 2. **`build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`, `IMAGE_FSTYPES`).
 3. **`meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
-
----
 
 ## BitBake Layers
 - **`meta-poky`** → Provides the Poky reference distribution.
