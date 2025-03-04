@@ -453,7 +453,7 @@ bitbake -c devshell rpi-play
 change each  `/opt/vc` with  `/usr/`
 
 the new patch file:
-```bach
+```patch
 diff --git a/renderers/CMakeLists.txt b/renderers/CMakeLists.txt
 index e561250..915ba92 100755
 --- a/renderers/CMakeLists.txt
