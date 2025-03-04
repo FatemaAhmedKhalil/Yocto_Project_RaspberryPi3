@@ -349,3 +349,54 @@ used for copying and setting file permissions.
 - `${D}` `${bindir}` → Installs the compiled binary into `/usr/bin/` inside the target filesystem.
 - `install -m 0755` → Copies the file and sets permissions (rwxr-xr-x).
 
+---
+
+## Integrating Nano
+```bash
+mkdir -p ./meta-IVI/recipes-editors/nano
+cd layers/meta-IVI/recipes-editors/nano
+recipetool create -o nano_1.0.bb https://ftp.gnu.org/gnu/nano/nano-7.2.tar.xz
+bitbake nano
+```
+Install dependencies required for building Nano
+```bash 
+sudo apt install autoconf automake autopoint gcc gettext git groff make pkg-config texinfo
+```
+Fetch and unpack the source code
+```bash
+bitbake -c fetch nano
+bitbake -c unpack nano
+```
+Find the WORKDIR path:
+```bash
+bitbake -e nano | grep -i "^workdir="
+```
+Navigate to the WORKDIR path.
+
+Run autogen.sh to generate the configure script:
+```bash
+./autogen.sh
+bitbake nano
+```
+
+---
+
+## Integrate Audio
+Create the `classes/` directory
+```bash
+cd ./meta-IVI
+mkdir -p classes
+touch classes/audio.bbclass
+```
+Edit the class: 
+```bash
+IMAGE_INSTALL:append = " pavucontrol pulseaudio pulseaudio-module-dbus-protocol pulseaudio-server \
+        pulseaudio-module-loopback pulseaudio-module-bluetooth-discover alsa-ucm-conf pulseaudio-module-bluetooth-policy alsa-topology-conf alsa-state alsa-lib alsa-tools \
+        pulseaudio-module-bluez5-device pulseaudio-module-bluez5-discover alsa-utils alsa-plugins packagegroup-rpi-test can-utils net-tools gstreamer1.0 \
+        iproute2 iputils qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline \
+        qtvirtualkeyboard bluez5 i2c-tools hostapd iptables"
+```
+
+---
+
+## rpi-play for Iphone
