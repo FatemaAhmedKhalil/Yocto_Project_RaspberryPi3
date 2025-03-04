@@ -583,17 +583,19 @@ create the following directory structure inside your custom layer:
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
 touch -p meta-IVI/recipes-connectivity/vsomeip/vsomeip_1.0.bb
 ```
-Edit the file:
+Edit `vsomeip_1.0.bb`:
 ```bash
 SUMMARY = "The implementation of SOME/IP"
 SECTION = "base"
 LICENSE = "MPLv2"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=815ca599c9df247a0c7f619bab123dad"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=9741c346eef56131163e13b9db1241b3"
 
 DEPENDS = "boost dlt-daemon"
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI = "git://github.com/GENIVI/${BPN}.git;protocol=https"
+
+SRCREV = "d58421766206ec7fa2084d2fe01841b5b0d8aeb5"
 
 S = "${WORKDIR}/git"
 
