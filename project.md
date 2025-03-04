@@ -351,7 +351,7 @@ used for copying and setting file permissions.
 
 ---
 
-## Integrating Nano
+## Integrate Nano
 ```bash
 mkdir -p meta-IVI/recipes-editors/nano
 cd meta-IVI/recipes-editors/nano
