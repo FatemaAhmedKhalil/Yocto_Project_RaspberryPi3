@@ -23,7 +23,7 @@ This guide provides a step-by-step breakdown of The Project.
 
 ---
 
-## Setting Up the Environment
+## Setting the Environment
 ### Install Dependencies (Ubuntu)
 ```bash
 sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping \
@@ -38,7 +38,7 @@ locale --all-locales | grep en_US.utf8
 
 ---
 
-## Download and Configure Poky
+## Download Poky
 Poky is the reference build system for the Yocto Project.
 ```bash
 git clone -b kirkstone https://github.com/yoctoproject/poky.git
@@ -82,7 +82,7 @@ PARALLEL_MAKE = "-j 4"
 - **`DL_DIR`** → Shared download directory.
 - **`BB_NUMBER_THREADS & PARALLEL_MAKE`** → Optimize build using multiple CPU cores.
 - **`bb.utils.cpu_count()`** → BitBake utility function that returns the number of CPU cores available on the system.  
-- `**//2`** → Python's integer division.  
+- **`//2`** → Python's integer division.  
 
 ---
 
