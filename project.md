@@ -238,7 +238,7 @@ SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Rec
 inherit audio
 
 ### IMAGE_INSTALL ###
-IMAGE_INSTALL:append=" helloworld openssh nano"
+IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 # if DISTRO = "infotainment"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", "rpi-play", " ", d)}"
 
