@@ -339,3 +339,13 @@ do_install () {
 # Ignore do_package_qa
 do_package_qa[noexec]="1"
 ```
+**do_compile ()**
+This function is automatically called during the build process to compile source code.
+- `${CXX}` → Uses the C++ compiler set by Yocto.
+
+**do_install ()**
+used for copying and setting file permissions.
+- `install -d` → Creates the destination directory.
+- `${D}` `${bindir}` → Installs the compiled binary into `/usr/bin/` inside the target filesystem.
+- `install -m 0755` → Copies the file and sets permissions (rwxr-xr-x).
+
