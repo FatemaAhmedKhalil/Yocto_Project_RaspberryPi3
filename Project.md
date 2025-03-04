@@ -254,5 +254,23 @@ IMAGE_FEATURES:append=" ssh-server-openssh"
 ### MACHINE_FEATURES ###
 MACHINE_FEATURES:append=" bluetooth wifi alsa"
 ```
+**Base Image** 
+`require`: Defines the core structure of the image by inheriting from an existing base image `rpi-test-image`.
+
+**Inheritance** 
+`inherit`: Some images inherit special classes that modify their behavior 
+```bash 
+inherit audio
+``` 
+
+**Package Installation** 
+`IMAGE_INSTALL: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
+
+**Image Features** 
+`IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
+
+
+**Machine Features** 
+`MACHINE_FEATURES`: Defines hardware-specific features available for the target machine `alsa`, `wifi`, `bluetooth`.
 
 ---
