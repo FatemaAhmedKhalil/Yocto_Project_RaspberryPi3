@@ -399,4 +399,4 @@ IMAGE_INSTALL:append = " pavucontrol pulseaudio pulseaudio-module-dbus-protocol 
 
 ---
 
-## rpi-play for Iphone
+## Integrate rpi-play for Iphone
