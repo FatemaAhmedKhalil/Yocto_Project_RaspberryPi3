@@ -27,13 +27,7 @@
 
 ---
 
-## Recipes  
-[BitBake recipes](w) define how software packages are built and integrated. Each recipe specifies source URLs, dependencies, patches, and build instructions.  
-
----
-
 # Setting Up the Environment  
-
 Before using BitBake, ensure your system meets the necessary dependencies. For [Ubuntu](w), install the required packages:  
 
 ```bash
