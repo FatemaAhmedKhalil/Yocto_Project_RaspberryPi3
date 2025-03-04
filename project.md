@@ -405,7 +405,7 @@ mkdir -p meta-IVI/recipes-rpiplay
 cd meta-IVI/recipes-rpiplay
 recipetool create -o rpi-play_1.0.bb https://github.com/FD-/RPiPlay.git
 ```
-# Integrate its Dependencies:
+### Integrate its Dependencies:
 from RPiPlay Repo
 ```
 The following packages are required for building on Raspbian:
@@ -425,7 +425,7 @@ find . -name "*ilclient*"
 /home/Fatema/yocto/build_raspberrypi3-32/tmp-glibc/work/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/userland/20220323-r0/image/usr/src/hello_pi/libs/ilclient
 ```
 When bitbake builds `rpi-play`, it pulls dependencies from the sysroot of its dependencies (like userland). But in this case, userland installs `ilclient` locally inside its own image/ directory, and not in the sysroot, so RPiPlay can't find it.
-# Step 1: Adjusting userland Sysroot
+### Step 1: Adjusting userland Sysroot
 Since userland installs ilclient inside its own image directory but not in sysroot, we need to tell Yocto to `include/usr/src/hello_pi/libs` in the sysroot of rpiplay.
 ```bash
 cd meta-raspberrypi/recipes-graphics/userland/userland_git.bb
@@ -434,14 +434,16 @@ Add the following line inside `userland_git.bb`:
 ```bash
 SYSROOT_DIRS:append="${prefix}/src"
 ```
- This ensures that `/usr/src/hello_pi/libs` is copied into the sysroot, making ilclient available for `rpi-play`.
+This ensures that `/usr/src/hello_pi/libs` is copied into the sysroot, making ilclient available for `rpi-play`.
 Patch CMakeLists.txt Instead of /opt/vc, CMakeLists.txt should look in /usr/src/hello_pi/libs.
 
-# Step 2: Patching CMake
+### Step 2: Patching CMake
 Navigate to the rpi-play source directory after unpacking:
 
-#  the path of working directory of the rpi-play
+the path of working directory of the rpi-play
+```bash
 cd /home/Fatema/yocto/build_raspberrypi3-32/tmp-glibc/work/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/rpi-play/1.0+gitAUTOINC+64d0341ed3-r0/git
+```
 
 Modify renders/CMakeLists.txt to replace `/opt/vc` with `/usr/`.
 Generate a patch:
