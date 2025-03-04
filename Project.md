@@ -274,3 +274,69 @@ inherit audio
 `MACHINE_FEATURES`: Defines hardware-specific features available for the target machine `alsa`, `wifi`, `bluetooth`.
 
 ---
+
+## Creating Cpp App Recipe `helloworld`
+```bash
+mkdir -p ./meta-IVI/recipes-native-cpp/helloworld
+cd /meta-IVI/recipes-native-cpp/helloworld
+recipetool create -o helloworld_1.0.bb https://github.com/embeddedlinuxworkshop/y_t1.git
+```
+After Generate the Recipe, Add Some Changes
+the Final Recipe
+```bash 
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+# TODO: 1. Decumentation Variables
+SUMMARY		= "Example for Native C++ Application for Testing YOCTO"
+DESCRIPTION	= "Example for Native C++ Application for Testing YOCTO. Provided by Bullet Guru"
+HOMEPAGE	= "http://github.com/embeddedlinuxworkshop/y_t1"
+
+# Unable to find any files that looked like license statements. Check the accompanying
+# documentation and source headers and set LICENSE and LIC_FILES_CHKSUM accordingly.
+#
+# NOTE: LICENSE is being set to "CLOSED" to allow you to at least start building - if
+# this is not accurate with respect to the licensing of the software being built (it
+# will not be in most cases) you must specify the correct value before using this
+# recipe for anything other than initial testing/development!
+
+# TODO: 2. Licence Variables
+LICENSE = "CLOSED"
+LIC_FILES_CHKSUM = ""
+
+# TODO: 3. Source Code Variables
+SRC_URI = "git://github.com/embeddedlinuxworkshop/y_t1;protocol=http;branch=master"
+
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
+SRCREV = "49600e3cd69332f0e7b8103918446302457cd950"
+
+S = "${WORKDIR}/git"
+
+# TODO: 4. Tasks Excuted through the Build Engine
+# NOTE: no Makefile found, unable to determine what needs to be done
+
+APPLICATION = "hello"
+
+do_compile () {
+	# Specify compilation commands here
+	
+	# Compile Cross-Compiler (Compiler Target )
+	$CXX "${S}"/main.cpp -o "${APPLICATION}"
+}
+
+do_install () {
+	# Specify install commands here
+	
+	# 1. manipulate -> ${WORKDIR}/image
+	# 2. Create Directory ${WORKDIR}/image/usr/bin
+	install -d "${D}"/"${bindir}"
+
+	#3. installing hello bin in Directory ${WORKDIR}/image/usr/bin 
+	install -m 0755 "${APPLICATION}" "${D}"/"${bindir}"
+}
+
+# Ignore do_package_qa
+do_package_qa[noexec]="1"
+```
