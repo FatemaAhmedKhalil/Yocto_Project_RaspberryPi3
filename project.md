@@ -568,6 +568,11 @@ bitbake rpi-play
 ---
 
 ## Integrate VSOMEIP
+Many users report errors like: [vsomeip GitHub Issue #362](https://github.com/COVESA/vsomeip/issues/362)  
+This occurs due to **incompatibility between VSOMEIP and Boost versions**.  
+Later versions cause the compilation to fail due to breaking changes in **Boost.Asio**.  so that you have to install `Boost 1.71` version:
+[recipes-support (boost files)](https://github.com/COVESA/vsomeip/files/9394162/recipes-support.zip) in your layer
+
 Since VSOMEIP has dependencies which conflict with some existing packages, it's essential to ensure the custom layer has a higher priority than `meta`.
 Add to `layer.conf`:
 ```bash
