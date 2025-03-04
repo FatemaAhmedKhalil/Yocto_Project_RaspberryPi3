@@ -1,58 +1,57 @@
-# BitBake Workflow
-### Overview
-BitBake is a build engine used in the Yocto Project to automate the process of building Linux distributions and applications. Below is a step-by-step breakdown of the BitBake workflow.
-### Workflow Steps
-1. **Create `bitbake.lock`** → Ensures that only one instance of BitBake runs at a time, preventing conflicts.  
-2. **Read `build/conf/bblayers.conf`** → Specifies the layers included in the build, such as `meta-openembedded` and `meta-yocto`.  
-3. **Read `build/conf/local.conf`** → Contains user-specific configurations, including `MACHINE`, `DISTRO`, and `IMAGE_FSTYPES`.  
-4. **Read `meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.  
+# BitBake Workflow Guide
+
+## Overview
+This guide provides a step-by-step breakdown of The Project.
+
+## BitBake Steps
+1. **Create `bitbake.lock`** → Ensures only one BitBake instance runs at a time, preventing conflicts.
+2. **Read `build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
+3. **Read `build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`, `IMAGE_FSTYPES`).
+4. **Read `meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
 
 ---
 
-# BitBake Layers
-- **`meta-poky`** → Provides the Poky reference distribution.  
-- **`meta-yocto-bsp`** → Contains Board Support Packages (BSPs) for reference hardware.  
-- **`meta-raspberrypi`** → Adds support for Raspberry Pi boards.  
-- **`meta-oe`** → Provides additional OpenEmbedded recipes and packages.  
-- **`meta-python`** → Includes additional Python packages.  
-- **`meta-networking`** → Provides networking utilities and services.  
-- **`meta-qt5`** → Adds support for the Qt5 framework.  
-- **`meta-info-distro`** → Custom layer defining infotainment distribution configurations.  
-- **`meta-audio-distro`** → Custom layer defining audio distribution configurations.  
-- **`meta-networking`** → Custom layer providing the `can-utils` package recipe.  
-- **`meta-features`** → Custom layer providing the `rpi-play` package recipe.  
-- **`meta-IVI`** → Custom layer providing an image recipe with a C++ application and Nano editor.  
+## BitBake Layers
+- **`meta-poky`** → Provides the Poky reference distribution.
+- **`meta-yocto-bsp`** → Contains Board Support Packages (BSPs) for reference hardware.
+- **`meta-raspberrypi`** → Adds support for Raspberry Pi boards.
+- **`meta-oe`** → Provides additional OpenEmbedded recipes and packages.
+- **`meta-python`** → Includes extra Python packages.
+- **`meta-networking`** → Provides networking utilities and services.
+- **`meta-qt5`** → Adds support for the Qt5 framework.
+- **Custom Layers:**
+  - **`meta-info-distro`** → Infotainment distribution configurations.
+  - **`meta-audio-distro`** → Audio distribution configurations.
+  - **`meta-IVI`** → Contains an image recipe with a C++ application and Nano editor.
 
 ---
 
-# Setting Up the Environment  
-Before using BitBake, ensure your system meets the necessary dependencies. For Ubuntu, install the required packages:  
+## Setting Up the Environment
+### Install Dependencies (Ubuntu)
 ```bash
 sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping \
 libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip \
 python3-subunit socat texinfo unzip wget xz-utils zstd git inkscape locales make \
 python3-saneyaml python3-sphinx-rtd-theme sphinx texlive-latex-extra
-```  
-Verify that the `en_US.utf8` locale is available:  
+```
+Verify that `en_US.utf8` locale is available:
 ```bash
 locale --all-locales | grep en_US.utf8
-```  
+```
 
 ---
 
-# Download and Configure Poky  
-Poky is the reference build system for the Yocto Project. To set it up:  
+## Download and Configure Poky
+Poky is the reference build system for the Yocto Project.
 ```bash
-git clone https://github.com/yoctoproject/poky.git
+git clone -b kirkstone https://github.com/yoctoproject/poky.git
 cd poky
-git switch kirkstone
-```  
-For more details, refer to the [Poky directory structure](https://docs.yoctoproject.org/4.0.25/ref-manual/structure.html#source-directory-structure).  
+```
 
 ---
 
-# Directory Structure  
-For better organization, follow this structure:  
+## Directory Structure
+Recommended directory structure:
 ```
 yocto
 ├── build-raspberrypi3-32   # Build directory for Raspberry Pi 3 (32-bit)
@@ -60,44 +59,43 @@ yocto
 ├── images                  # Output directory for generated images
 ├── poky                    # Poky source directory
 ```
-- **`downloads`** → Prevents redundant downloads when building multiple images.  
-- **`images`** → Stores output images for easy access.  
+- **`downloads`** → Prevents redundant downloads.
+- **`images`** → Stores output images.
 
 ---
 
-# Initialize the Build Environment  
-Run the following command inside the `poky` directory to set up the build environment:  
+## Initialize the Build Environment
+Run inside `poky`:
 ```bash
 source oe-init-build-env build-raspberrypi3-32
 ```
-This creates a `build` directory and sets up the necessary environment variables.  
+This creates the `build` directory and sets up environment variables.
 
 ---
 
-# Configure Local Build Settings  
-Edit `local.conf` inside `build-raspberrypi3-32/conf/` to customize the build for the target hardware:  
+## Configure Local Build Settings
+Edit `local.conf`:
 ```bash
 MACHINE ?= "raspberrypi3"
 DL_DIR ?= "${TOPDIR}/../downloads"
-# Optimize build performance
 BB_NUMBER_THREADS = "${@bb.utils.cpu_count()//2}"
 PARALLEL_MAKE = "-j 4"
 ```
-- **`MACHINE`** → Specifies the target hardware (Raspberry Pi 3, 32-bit).  
-- **`DL_DIR`** → Points to the shared `downloads` directory to avoid redundant downloads.  
-- **`BB_NUMBER_THREADS` & `PARALLEL_MAKE`** → Optimize build performance using multiple CPU cores.  
+- **`MACHINE`** → Specifies target hardware.
+- **`DL_DIR`** → Shared download directory.
+- **`BB_NUMBER_THREADS & PARALLEL_MAKE`** → Optimize build using multiple CPU cores.
 - **`bb.utils.cpu_count()`** → BitBake utility function that returns the number of CPU cores available on the system.  
-- **`//2`** → Python's integer division.  
+- `**//2`** → Python's integer division.  
 
 ---
 
-# Infotainment Distro
-Create The Layer Directory Structure
+## Infotainment Distro
+### Create the Layer Directory Structure
 ```bash
 mkdir -p meta-info-distro/conf/distro 
-touch ./meta-info-distro/conf/distro/infotainment.conf
+touch meta-info-distro/conf/distro/infotainment.conf
 ```
-
+Edit `infotainment.conf`:
 ```bash
 DISTRO="infotainment"
 DISTRO_NAME="Bullet-infotainment"
@@ -141,21 +139,25 @@ LOCALCONF_VERSION="2"
 
 # add poky sanity bbclass
 INHERIT += "poky-sanity"
+
 ```
-Update `local.conf` to Use the infotainment Distribution
+Update `local.conf` to use infotainment distro:
 ```bash
 DISTRO ?= "infotainment"
 ```
 
-### Enable systemd for Infotainment Distribution
-- Poky uses sysvinit as its init manager
+---
 
-Create the Directory Structure:
+## Enable Systemd for Infotainment Distribution
+Poky uses `sysvinit` by default. Switch to `systemd`:
+
+### Create Directory Structure
 ```bash
 mkdir -p meta-IVI/conf/distro/include
 touch meta-IVI/conf/distro/include/systemd.inc
 ```
 
+### Configure Systemd
 ```bash
 # install systemd  as init manager 
 DISTRO_FEATURES:append = " systemd" 
@@ -169,13 +171,13 @@ VIRTUAL-RUNTIME_initscripts = " systemd-compat-units"
 
 ---
 
-# Audio Distro
-Create The Layer Directory Structure
+## Audio Distro
+### Create the Layer Directory Structure
 ```bash
-mkdir -p  meta-audio-distro/conf/distro
-touch ./meta-audio-distro/conf/distro/audio.conf 
+mkdir -p meta-audio-distro/conf/distro
+touch meta-audio-distro/conf/distro/audio.conf
 ```
-
+Edit `audio.conf`:
 ```bash
 DISTRO="audio"
 DISTRO_NAME="Bullet-audio"
@@ -221,12 +223,14 @@ INHERIT += "poky-sanity"
 
 ---
 
-# Image Recipe `ivi-test-image.bb`
+## Image Recipe: `ivi-test-image.bb`
+### Create Directory Structure
 ```bash
-mkdir -p ./meta-IVI/recipes-core/images
-touch ./meta-IVI/recipes-core/images/ivi-test-image.bb
+mkdir -p meta-IVI/recipes-core/images
+touch meta-IVI/recipes-core/images/ivi-test-image.bb
 ```
 
+### Define Image Recipe
 ```bash
 # Base this image on rpi-test-image
 require recipes-core/images/rpi-test-image.bb
@@ -253,3 +257,5 @@ IMAGE_FEATURES:append=" ssh-server-openssh"
 ### MACHINE_FEATURES ###
 MACHINE_FEATURES:append=" bluetooth wifi alsa"
 ```
+
+---
