@@ -576,7 +576,7 @@ BBFILE_PRIORITY_meta-IVI = "8"
 create the following directory structure inside your custom layer:
 ```bash
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
-touch -p meta-IVI/recipes-connectivity/vsomeip/vsomeip_0.1.bb
+touch -p meta-IVI/recipes-connectivity/vsomeip/vsomeip_1.0.bb
 ```
 Edit the file:
 ```bash
