@@ -569,9 +569,9 @@ bitbake rpi-play
 
 ## Integrate VSOMEIP
 Since VSOMEIP has dependencies which conflict with some existing packages, it's essential to ensure the custom layer has a higher priority than `meta`.
-Add to layer.conf:
+Add to `layer.conf`:
 ```bash
-sh BBFILE_PRIORITY_meta-IVI = "8"
+BBFILE_PRIORITY_meta-IVI = "8"
 ```
 create the following directory structure inside your custom layer:
 ```bash
