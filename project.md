@@ -601,6 +601,11 @@ S = "${WORKDIR}/git"
 
 inherit cmake lib_package gitpkgv
 
+# Specify any options you want to pass to cmake using EXTRA_OECMAKE:
+EXTRA_OECMAKE = ""
+TARGET_LDFLAGS += "-Wl,--copy-dt-needed-entries"
+EXTRA_OEMAKE:append = " LDFLAGS='${TARGET_LDFLAGS}'"
+
 PACKAGES:remove = "${PN}-bin"
 FILES:${PN} += "${bindir}/vsomeipd ${sysconfdir}/${BPN}"
 FILES:${PN}-dev += "${libdir}/cmake"
