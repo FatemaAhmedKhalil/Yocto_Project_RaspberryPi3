@@ -90,3 +90,166 @@ PARALLEL_MAKE = "-j 4"
 - **`//2`** → Python's integer division.  
 
 ---
+
+# Infotainment Distro
+Create The Layer Directory Structure
+```bash
+mkdir -p meta-info-distro/conf/distro 
+touch ./meta-info-distro/conf/distro/infotainment.conf
+```
+
+```bash
+DISTRO="infotainment"
+DISTRO_NAME="Bullet-infotainment"
+DISTRO_VERSION="1.0"
+
+MAINTAINER="fatemahmedkhalil@gmail.com"
+
+
+# SDK Information.
+SDK_VENDOR = "-bulletSDK"
+SDK_VERSION = "${@d.getVar('DISTRO_VERSION').replace('snapshot-${METADATA_REVISION}', 'snapshot')}"
+SDK_VERSION[vardepvalue] = "${SDK_VERSION}"
+
+SDK_NAME = "${DISTRO}-${TCLIBC}-${SDKMACHINE}-${IMAGE_BASENAME}-${TUNE_PKGARCH}-${MACHINE}"
+# Installation path --> can be changed to ${HOME}-${DISTRO}-${SDK_VERSION}
+SDKPATHINSTALL = "/opt/${DISTRO}/${SDK_VERSION}" 
+
+# Disribution Feature --> NOTE: used to add customize package (for package usage).
+
+# infotainment --> INFOTAINMENT
+
+INFOTAINMENT_DEFAULT_DISTRO_FEATURES = "largefile opengl ptest multiarch vulkan x11 bluez5 bluetooth wifi qt5 info"
+INFOTAINMENT_DEFAULT_EXTRA_RDEPENDS = "packagegroup-core-boot"
+INFOTAINMENT_DEFAULT_EXTRA_RRECOMMENDS = "kernel-module-af-packet"
+
+# TODO: to be org.
+
+DISTRO_FEATURES ?= "${DISTRO_FEATURES_DEFAULT} ${INFOTAINMENT_DEFAULT_DISTRO_FEATURES} userland"
+
+# install systemd  as init manager 
+require conf/distro/include/systemd.inc
+
+# prefered version for packages.
+PREFERRED_VERSION_linux-yocto ?= "5.15%"
+PREFERRED_VERSION_linux-yocto-rt ?= "5.15%"
+
+
+# Build System configuration.
+
+LOCALCONF_VERSION="2"
+
+# add poky sanity bbclass
+INHERIT += "poky-sanity"
+```
+Update `local.conf` to Use the infotainment Distribution
+```bash
+DISTRO ?= "infotainment"
+```
+
+### Enable systemd for Infotainment Distribution
+- Poky uses sysvinit as its init manager
+
+Create the Directory Structure:
+```bash
+mkdir -p meta-IVI/conf/distro/include
+touch meta-IVI/conf/distro/include/systemd.inc
+```
+
+```bash
+# install systemd  as init manager 
+DISTRO_FEATURES:append = " systemd" 
+
+
+# select systemd as init manager 
+VIRTUAL-RUNTIME_init_manager = " systemd"
+VIRTUAL-RUNTIME_initscripts = " systemd-compat-units"
+# VIRTUAL-RUNTIME_dev_manager = " busybox-mdev"
+```
+
+---
+
+# Audio Distro
+Create The Layer Directory Structure
+```bash
+mkdir -p  meta-audio-distro/conf/distro
+touch ./meta-audio-distro/conf/distro/audio.conf 
+```
+
+```bash
+DISTRO="audio"
+DISTRO_NAME="Bullet-audio"
+DISTRO_VERSION="1.0"
+
+MAINTAINER="fatemahmedkhalil@gmail.com"
+
+
+# SDK Information.
+SDK_VENDOR = "-bulletSDK"
+SDK_VERSION = "${@d.getVar('DISTRO_VERSION').replace('snapshot-${METADATA_REVISION}', 'snapshot')}"
+SDK_VERSION[vardepvalue] = "${SDK_VERSION}"
+
+SDK_NAME = "${DISTRO}-${TCLIBC}-${SDKMACHINE}-${IMAGE_BASENAME}-${TUNE_PKGARCH}-${MACHINE}"
+# Installation path --> can be changed to ${HOME}-${DISTRO}-${SDK_VERSION}
+SDKPATHINSTALL = "/opt/${DISTRO}/${SDK_VERSION}" 
+
+# Disribution Feature --> NOTE: used to add customize package (for package usage).
+
+# audio --> AUDIO
+
+AUDIO_DEFAULT_DISTRO_FEATURES = "largefile opengl ptest multiarch vulkan bluez5 bluetooth wifi audio_only"
+AUDIO_DEFAULT_EXTRA_RDEPENDS = "packagegroup-core-boot"
+AUDIO_DEFAULT_EXTRA_RRECOMMENDS = "kernel-module-af-packet"
+
+# TODO: to be org.
+
+DISTRO_FEATURES ?= "${DISTRO_FEATURES_DEFAULT} ${AUDIO_DEFAULT_DISTRO_FEATURES} userland"
+
+
+# prefered version for packages.
+PREFERRED_VERSION_linux-yocto ?= "5.15%"
+PREFERRED_VERSION_linux-yocto-rt ?= "5.15%"
+
+
+# Build System configuration.
+
+LOCALCONF_VERSION="2"
+
+# add poky sanity bbclass
+INHERIT += "poky-sanity"
+```
+
+---
+
+# Image Recipe `ivi-test-image.bb`
+```bash
+mkdir -p ./meta-IVI/recipes-core/images
+touch ./meta-IVI/recipes-core/images/ivi-test-image.bb
+```
+
+```bash
+# Base this image on rpi-test-image
+require recipes-core/images/rpi-test-image.bb
+
+# Include Local Variables
+SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Recipes"
+
+inherit audio
+
+### IMAGE_INSTALL ###
+IMAGE_INSTALL:append=" helloworld openssh nano"
+# if DISTRO = "infotainment"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", "rpi-play", " ", d)}"
+
+### IMAGE_FEATURES ###
+##########################################################
+## 1. IMAGE_INSTALL --> ssh                             ##
+## 2. do_rootfs -->                                     ##
+##    - allow root access through ssh                   ##
+##    - access root through ssh using empty password    ##
+##########################################################
+IMAGE_FEATURES:append=" ssh-server-openssh"
+
+### MACHINE_FEATURES ###
+MACHINE_FEATURES:append=" bluetooth wifi alsa"
+```
