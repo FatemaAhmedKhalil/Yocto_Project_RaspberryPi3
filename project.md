@@ -400,3 +400,212 @@ IMAGE_INSTALL:append = " pavucontrol pulseaudio pulseaudio-module-dbus-protocol 
 ---
 
 ## Integrate rpi-play for Iphone
+```bash
+mkdir -p meta-IVI/recipes-rpiplay
+cd meta-IVI/recipes-rpiplay
+recipetool create -o rpi-play_1.0.bb https://github.com/FD-/RPiPlay.git
+```
+# Integrate its Dependencies:
+from RPiPlay Repo
+```
+The following packages are required for building on Raspbian:
+- cmake (for the build system)
+- libavahi-compat-libdnssd-dev (for the bonjour registration)
+- libplist-dev (for plist handling)
+- libssl-dev (for crypto primitives)
+- ilclient and Broadcom's OpenMAX stack as present in /opt/vc in Raspbian.
+```
+**ilclient** 
+ilclient exists, but in a different location in `userland` package
+so we need to correct the CMake paths. 
+```bash
+find . -name "*ilclient*"
+```
+```
+/home/Fatema/yocto/build_raspberrypi3-32/tmp-glibc/work/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/userland/20220323-r0/image/usr/src/hello_pi/libs/ilclient
+```
+When bitbake builds `rpi-play`, it pulls dependencies from the sysroot of its dependencies (like userland). But in this case, userland installs `ilclient` locally inside its own image/ directory, and not in the sysroot, so RPiPlay can't find it.
+# Step 1: Adjusting userland Sysroot
+Since userland installs ilclient inside its own image directory but not in sysroot, we need to tell Yocto to `include/usr/src/hello_pi/libs` in the sysroot of rpiplay.
+```bash
+cd meta-raspberrypi/recipes-graphics/userland/userland_git.bb
+```
+Add the following line inside `userland_git.bb`:
+```bash
+SYSROOT_DIRS:append="${prefix}/src"
+```
+ This ensures that `/usr/src/hello_pi/libs` is copied into the sysroot, making ilclient available for `rpi-play`.
+Patch CMakeLists.txt Instead of /opt/vc, CMakeLists.txt should look in /usr/src/hello_pi/libs.
+
+# Step 2: Patching CMake
+Navigate to the rpi-play source directory after unpacking:
+
+#  the path of working directory of the rpi-play
+cd /home/Fatema/yocto/build_raspberrypi3-32/tmp-glibc/work/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/rpi-play/1.0+gitAUTOINC+64d0341ed3-r0/git
+
+Modify renders/CMakeLists.txt to replace `/opt/vc` with `/usr/`.
+Generate a patch:
+```bach
+bitbake -c devshell rpi-play
+``` 
+change each  `/opt/vc` with  `/usr/`
+
+the new patch file:
+```bach
+diff --git a/renderers/CMakeLists.txt b/renderers/CMakeLists.txt
+index e561250..915ba92 100755
+--- a/renderers/CMakeLists.txt
++++ b/renderers/CMakeLists.txt
+@@ -17,20 +17,20 @@ set( RENDERER_LINK_LIBS "" )
+ set( RENDERER_INCLUDE_DIRS "" )
+ 
+ # Check for availability of OpenMAX libraries on Raspberry Pi
+-find_library( BRCM_GLES_V2 brcmGLESv2 HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
+-find_library( BRCM_EGL brcmEGL HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
+-find_library( OPENMAXIL openmaxil HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
+-find_library( BCM_HOST bcm_host HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
+-find_library( VCOS vcos HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
+-find_library( VCHIQ_ARM vchiq_arm HINTS ${CMAKE_SYSROOT}/opt/vc/lib/ )
++find_library( BRCM_GLES_V2 brcmGLESv2 HINTS ${CMAKE_SYSROOT}/usr/lib/ )
++find_library( BRCM_EGL brcmEGL HINTS ${CMAKE_SYSROOT}/usr/lib/ )
++find_library( OPENMAXIL openmaxil HINTS ${CMAKE_SYSROOT}/usr/lib/ )
++find_library( BCM_HOST bcm_host HINTS ${CMAKE_SYSROOT}/usr/lib/ )
++find_library( VCOS vcos HINTS ${CMAKE_SYSROOT}/usr/lib/ )
++find_library( VCHIQ_ARM vchiq_arm HINTS ${CMAKE_SYSROOT}/usr/lib/ )
+ 
+ if( BRCM_GLES_V2 AND BRCM_EGL AND OPENMAXIL AND BCM_HOST AND VCOS AND VCHIQ_ARM )
+   # We have OpenMAX libraries available! Use them!
+   message( STATUS "Found OpenMAX libraries for Raspberry Pi" )
+-  include_directories( ${CMAKE_SYSROOT}/opt/vc/include/ 
+-  	${CMAKE_SYSROOT}/opt/vc/include/interface/vcos/pthreads 
+-  	${CMAKE_SYSROOT}/opt/vc/include/interface/vmcs_host/linux 
+-  	${CMAKE_SYSROOT}/opt/vc/src/hello_pi/libs/ilclient )
++  include_directories( ${CMAKE_SYSROOT}/usr/include/ 
++  	${CMAKE_SYSROOT}/usr/include/interface/vcos/pthreads 
++  	${CMAKE_SYSROOT}/usr/include/interface/vmcs_host/linux 
++  	${CMAKE_SYSROOT}/usr/src/hello_pi/libs/ilclient )
+ 
+   option(BUILD_SHARED_LIBS "" OFF)
+   add_subdirectory(fdk-aac EXCLUDE_FROM_ALL)
+@@ -38,7 +38,7 @@ if( BRCM_GLES_V2 AND BRCM_EGL AND OPENMAXIL AND BCM_HOST AND VCOS AND VCHIQ_ARM
+ 
+   set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DHAVE_LIBOPENMAX=2 -DOMX -DOMX_SKIP64BIT -ftree-vectorize -pipe -DUSE_EXTERNAL_OMX   -DHAVE_LIBBCM_HOST -DUSE_EXTERNAL_LIBBCM_HOST -DUSE_VCHIQ_ARM -Wno-psabi" )
+   
+-  aux_source_directory( ${CMAKE_SYSROOT}/opt/vc/src/hello_pi/libs/ilclient/ ilclient_src )
++  aux_source_directory( ${CMAKE_SYSROOT}/usr/src/hello_pi/libs/ilclient/ ilclient_src )
+   set( DIR_SRCS ${ilclient_src} )
+   add_library( ilclient STATIC ${DIR_SRCS} )
+```
+Copy the patch to the recipe folder
+```bach
+cp 0001_include_dir.patch  /home/Fatema/yocto/build_raspberrypi3-32/tmp-glibc/work/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/rpi-play/1.0+gitAUTOINC+64d0341ed3-r0/git/patches
+```
+Add Remaining Dependencies:
+```bash 
+DEPENDS = "userland openssl avahi mdns libplist gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-vaapi gstreamer1.0-plugins-bad"
+RDEPENDS_${PN} = " avahi libplist gstreamer1.0-plugins-base gstreamer1.0-plugins-good "
+```
+
+edit `rpi-play_1.0.bb`
+```bash
+# Recipe created by recipetool
+# This is the basis of a recipe and may need further editing in order to be fully functional.
+# (Feel free to remove these comments when editing.)
+
+# WARNING: the following LICENSE and LIC_FILES_CHKSUM values are best guesses - it is
+# your responsibility to verify that the values are complete and correct.
+#
+# The following license files were not able to be identified and are
+# represented as "Unknown" below, you will need to check them yourself:
+#   LICENSE
+#   lib/llhttp/LICENSE-MIT
+#   lib/playfair/LICENSE.md
+LICENSE = "Unknown"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=1ebbd3e34237af26da5dc08a4e440464 \
+                    file://lib/llhttp/LICENSE-MIT;md5=f5e274d60596dd59be0a1d1b19af7978 \
+                    file://lib/playfair/LICENSE.md;md5=c7cd308b6eee08392fda2faed557d79a"
+
+SRC_URI = "git://github.com/FD-/RPiPlay.git;protocol=https;branch=master \
+    file://0001_include_dir.patch"
+
+# Modify these as desired
+PV = "1.0+git${SRCPV}"
+SRCREV = "64d0341ed3bef098c940c9ed0675948870a271f9"
+
+S = "${WORKDIR}/git"
+
+# NOTE: the following library dependencies are unknown, ignoring: bcm_host openmaxil vcos brcmEGL brcmGLESv2 plist-2 vchiq_arm plist
+#       (this is based on recipes that have previously been built and packaged)
+DEPENDS = "userland openssl avahi mdns libplist gstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-vaapi gstreamer1.0-plugins-bad"
+RDEPENDS_${PN} = " avahi libplist gstreamer1.0-plugins-base gstreamer1.0-plugins-good "
+
+inherit cmake pkgconfig
+
+# Specify any options you want to pass to cmake using EXTRA_OECMAKE:
+EXTRA_OECMAKE = ""
+TARGET_LDFLAGS += "-Wl,--copy-dt-needed-entries"
+EXTRA_OEMAKE:append = " LDFLAGS='${TARGET_LDFLAGS}'"
+
+# do_recipesysroot_main(){
+#     mkdir -p "${WORKDIR}/recipe-sysroot/opt/vc"
+#     cp -r  "${WORKDIR}/recipe-sysroot/usr/src" "${WORKDIR}/recipe-sysroot/opt/vc"
+#     cp -r  "${WORKDIR}/recipe-sysroot/usr/include" "${WORKDIR}/recipe-sysroot/opt/vc"
+#     cp -r  "${WORKDIR}/recipe-sysroot/usr/lib" "${WORKDIR}/recipe-sysroot/opt/vc"
+#     cp -r  "${WORKDIR}/recipe-sysroot/usr/bin" "${WORKDIR}/recipe-sysroot/opt/vc"
+#     cp -r  "${WORKDIR}/recipe-sysroot/usr/share" "${WORKDIR}/recipe-sysroot/opt/vc"
+# }
+# addtask do_recipesysroot_main before do_configure
+
+```
+Rebuild `rpi-play` with the Patched CMakeLists.txt and Dependencies: 
+```bash
+bitbake -c cleanall rpi-play
+bitbake rpi-play
+```
+
+---
+
+## Integrate VSOMEIP
+Since VSOMEIP has dependencies which conflict with some existing packages, it's essential to ensure the custom layer has a higher priority than `meta`.
+Add to layer.conf:
+```bash
+sh BBFILE_PRIORITY_meta-IVI = "8"
+```
+create the following directory structure inside your custom layer:
+```bash
+mkdir -p meta-IVI/recipes-connectivity/vsomeip
+```
+create the Bitbake recipe and Edit the file:
+```bash
+SUMMARY = "The implementation of SOME/IP"
+SECTION = "base"
+LICENSE = "MPLv2"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=815ca599c9df247a0c7f619bab123dad"
+
+DEPENDS = "boost dlt-daemon"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
+SRC_URI = "git://github.com/GENIVI/${BPN}.git;protocol=https"
+
+S = "${WORKDIR}/git"
+
+inherit cmake lib_package gitpkgv
+
+PACKAGES:remove = "${PN}-bin"
+FILES:${PN} += "${bindir}/vsomeipd ${sysconfdir}/${BPN}"
+FILES:${PN}-dev += "${libdir}/cmake"
+
+BBCLASSEXTEND = "nativesdk"
+
+do_install:append() {
+   mv ${D}/usr/etc ${D}
+}
+```
+
+---
+
+## Building an Image
+Choose the Desired Distro and Run: 
+```bash
+bitbake ivi-test-image
+```
