@@ -576,8 +576,9 @@ BBFILE_PRIORITY_meta-IVI = "8"
 create the following directory structure inside your custom layer:
 ```bash
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
+touch -p meta-IVI/recipes-connectivity/vsomeip/vsomeip_0.1.bb
 ```
-create the Bitbake recipe and Edit the file:
+Edit the file:
 ```bash
 SUMMARY = "The implementation of SOME/IP"
 SECTION = "base"
