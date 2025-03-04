@@ -281,8 +281,7 @@ mkdir -p ./meta-IVI/recipes-native-cpp/helloworld
 cd /meta-IVI/recipes-native-cpp/helloworld
 recipetool create -o helloworld_1.0.bb https://github.com/embeddedlinuxworkshop/y_t1.git
 ```
-After Generate the Recipe, Add Some Changes
-the Final Recipe
+After Generate the Recipe, Add Some Changes, the Final Recipe:
 ```bash 
 # Recipe created by recipetool
 # This is the basis of a recipe and may need further editing in order to be fully functional.
