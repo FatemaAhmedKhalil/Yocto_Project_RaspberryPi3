@@ -277,7 +277,7 @@ inherit audio
 
 ## Creating Cpp App Recipe `helloworld`
 ```bash
-mkdir -p ./meta-IVI/recipes-native-cpp/helloworld
+mkdir -p /meta-IVI/recipes-native-cpp/helloworld
 cd /meta-IVI/recipes-native-cpp/helloworld
 recipetool create -o helloworld_1.0.bb https://github.com/embeddedlinuxworkshop/y_t1.git
 ```
@@ -354,7 +354,7 @@ used for copying and setting file permissions.
 ## Integrating Nano
 ```bash
 mkdir -p ./meta-IVI/recipes-editors/nano
-cd layers/meta-IVI/recipes-editors/nano
+cd /meta-IVI/recipes-editors/nano
 recipetool create -o nano_1.0.bb https://ftp.gnu.org/gnu/nano/nano-7.2.tar.xz
 bitbake nano
 ```
