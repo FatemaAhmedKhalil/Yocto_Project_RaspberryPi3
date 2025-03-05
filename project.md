@@ -266,7 +266,7 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 
 ```bash 
 inherit audio
-`INHERIT:append:audio`= " qtfeatures"  #inherit qt classes only if the distro is `audio`
+INHERIT:append:audio = " qtfeatures"  #inherit qt classes only if the distro is `audio`
 ``` 
 
 **Package Installation** 
