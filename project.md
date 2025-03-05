@@ -377,7 +377,7 @@ bitbake -c unpack nano
 ```
 Find the WORKDIR path:
 ```bash
-bitbake -e nano | grep -i "^workdir="
+bitbake -e nano | grep -i "^WORKDIR="
 ```
 Navigate to the WORKDIR path.
 
