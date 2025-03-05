@@ -240,7 +240,7 @@ inherit audio
 
 
 ### IMAGE INSTALLATION ###
-IMAGE_INSTALL:append=" helloworld openssh nano"
+IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 
 # if Distro ?= "infotainment"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
