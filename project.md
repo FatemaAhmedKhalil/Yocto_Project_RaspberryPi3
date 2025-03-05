@@ -393,8 +393,7 @@ Edit the class:
 IMAGE_INSTALL:append = " pavucontrol pulseaudio pulseaudio-module-dbus-protocol pulseaudio-server \
         pulseaudio-module-loopback pulseaudio-module-bluetooth-discover alsa-ucm-conf pulseaudio-module-bluetooth-policy alsa-topology-conf alsa-state alsa-lib alsa-tools \
         pulseaudio-module-bluez5-device pulseaudio-module-bluez5-discover alsa-utils alsa-plugins packagegroup-rpi-test can-utils net-tools gstreamer1.0 \
-        iproute2 iputils qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline \
-        qtvirtualkeyboard bluez5 i2c-tools hostapd iptables"
+        iproute2 iputils bluez5 i2c-tools hostapd iptables"
 ```
 
 ---
@@ -569,16 +568,6 @@ bitbake rpi-play
 ---
 
 ## Integrate VSOMEIP
-Many users report errors like: [vsomeip GitHub Issue #362](https://github.com/COVESA/vsomeip/issues/362)  
-This occurs due to **incompatibility between VSOMEIP and Boost versions**.  
-Later versions cause the compilation to fail due to breaking changes in **Boost.Asio**.  so that you have to install `Boost 1.71` version:
-[recipes-support (boost files)](https://github.com/COVESA/vsomeip/files/9394162/recipes-support.zip) in your layer
-
-Since VSOMEIP has dependencies which conflict with some existing packages, it's essential to ensure the custom layer has a higher priority than `meta`.
-Add to `layer.conf`:
-```bash
-BBFILE_PRIORITY_meta-IVI = "8"
-```
 create the following directory structure inside your custom layer:
 ```bash
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
@@ -607,13 +596,17 @@ SRCREV = "d58421766206ec7fa2084d2fe01841b5b0d8aeb5"
 
 S = "${WORKDIR}/git"
 
-# NOTE: unable to map the following CMake package dependencies: Doxygen benchmark
-DEPENDS = "boost systemd"
+# NOTE: unable to map the following CMake package dependencies: benchmark Doxygen
+DEPENDS = " boost"
 
 inherit cmake pkgconfig
 
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 EXTRA_OECMAKE = ""
+
+do_install:append() {
+    mv ${D}/usr/etc ${D}/etc
+}
 ```
 
 ---
