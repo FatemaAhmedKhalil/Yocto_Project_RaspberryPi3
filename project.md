@@ -246,7 +246,7 @@ IMAGE_INSTALL:append=" helloworld openssh nano"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
 
 # if Distro ?= "audio"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qt-creator qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
 INHERIT:append:audio = " qmake5"
 
 ### IMAGE_FEATURES ###
