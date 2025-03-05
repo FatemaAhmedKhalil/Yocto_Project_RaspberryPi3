@@ -232,19 +232,22 @@ touch meta-IVI/recipes-core/images/ivi-test-image.bb
 # Base this image on rpi-test-image
 require recipes-core/images/rpi-test-image.bb
 
-# Include Local Variables
+# Summary of the Image
 SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Recipes"
 
+# Inherit necessary classes
 inherit audio
 
-### IMAGE_INSTALL ###
-IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
+### IMAGE INSTALLATION ###
+IMAGE_INSTALL:append=" helloworld openssh nano"
 
-# if DISTRO = "infotainment"
+# Conditional installation based on DISTRO_FEATURES
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
 
-# if DISTRO = "audio"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols", " ", d)}"
+# Ensure required Qt tools for development
+INHERIT:append:audio=" qmake5 qmake5_paths pkgconfig"
+
 
 ### IMAGE_FEATURES ###
 ##########################################################
