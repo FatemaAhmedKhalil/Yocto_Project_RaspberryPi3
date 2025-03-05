@@ -3,12 +3,65 @@ This guide provides a step-by-step breakdown of The Project.
 
 ---
 
-## BitBake 
+## Setting the Environment
+### Install Dependencies (Ubuntu)
+```bash
+sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping \
+libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip \
+python3-subunit socat texinfo unzip wget xz-utils zstd git inkscape locales make \
+python3-saneyaml python3-sphinx-rtd-theme sphinx texlive-latex-extra
+```
+Verify that `en_US.utf8` locale is available:
+```bash
+locale --all-locales | grep en_US.utf8
+```
+
+### Download Poky
+Poky is the reference build system for the Yocto Project.
+```bash
+git clone -b kirkstone https://github.com/yoctoproject/poky.git
+cd poky
+```
+
+### Directory Structure
+Recommended directory structure:
+```
+yocto
+├── build-raspberrypi3-32   # Build directory for Raspberry Pi 3 (32-bit)
+├── downloads               # Shared directory for downloaded source files
+├── images                  # Output directory for generated images
+├── poky                    # Poky source directory
+```
+- **`downloads`** → Prevents redundant downloads.
+- **`images`** → Stores output images.
+
+### Initialize the Build Environment
+Run inside `poky`:
+```bash
+source oe-init-build-env ../build-raspberrypi3-32
+```
+This creates the `build` directory and sets up environment variables.
+
+### Configure Local Build Settings
+Edit `local.conf`:
+```bash
+MACHINE ?= "raspberrypi3"
+DL_DIR ?= "${TOPDIR}/../downloads"
+BB_NUMBER_THREADS = "${@bb.utils.cpu_count()//2}"
+PARALLEL_MAKE = "-j 4"
+```
+- **`MACHINE`** → Specifies target hardware.
+- **`DL_DIR`** → Shared download directory.
+- **`BB_NUMBER_THREADS & PARALLEL_MAKE`** → Optimize build using multiple CPU cores.
+- **`bb.utils.cpu_count()`** → BitBake utility function that returns the number of CPU cores available on the system.  
+- **`//2`** → Python's integer division.
+
+### BitBake Configurations
 1. **`build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
 2. **`build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`).
 3. **`meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
 
-## BitBake Layers
+### BitBake Layers
 - **`meta-poky`** → Provides the Poky reference distribution.
 - **`meta-yocto-bsp`** → Contains Board Support Packages (BSPs) for reference hardware.
 - **`meta-raspberrypi`** → Adds support for Raspberry Pi boards.
@@ -23,70 +76,7 @@ This guide provides a step-by-step breakdown of The Project.
 
 ---
 
-## Setting the Environment
-### Install Dependencies (Ubuntu)
-```bash
-sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping \
-libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip \
-python3-subunit socat texinfo unzip wget xz-utils zstd git inkscape locales make \
-python3-saneyaml python3-sphinx-rtd-theme sphinx texlive-latex-extra
-```
-Verify that `en_US.utf8` locale is available:
-```bash
-locale --all-locales | grep en_US.utf8
-```
-
----
-
-## Download Poky
-Poky is the reference build system for the Yocto Project.
-```bash
-git clone -b kirkstone https://github.com/yoctoproject/poky.git
-cd poky
-```
-
----
-
-## Directory Structure
-Recommended directory structure:
-```
-yocto
-├── build-raspberrypi3-32   # Build directory for Raspberry Pi 3 (32-bit)
-├── downloads               # Shared directory for downloaded source files
-├── images                  # Output directory for generated images
-├── poky                    # Poky source directory
-```
-- **`downloads`** → Prevents redundant downloads.
-- **`images`** → Stores output images.
-
----
-
-## Initialize the Build Environment
-Run inside `poky`:
-```bash
-source oe-init-build-env ../build-raspberrypi3-32
-```
-This creates the `build` directory and sets up environment variables.
-
----
-
-## Configure Local Build Settings
-Edit `local.conf`:
-```bash
-MACHINE ?= "raspberrypi3"
-DL_DIR ?= "${TOPDIR}/../downloads"
-BB_NUMBER_THREADS = "${@bb.utils.cpu_count()//2}"
-PARALLEL_MAKE = "-j 4"
-```
-- **`MACHINE`** → Specifies target hardware.
-- **`DL_DIR`** → Shared download directory.
-- **`BB_NUMBER_THREADS & PARALLEL_MAKE`** → Optimize build using multiple CPU cores.
-- **`bb.utils.cpu_count()`** → BitBake utility function that returns the number of CPU cores available on the system.  
-- **`//2`** → Python's integer division.  
-
----
-
-## Infotainment Distro
+## Create Infotainment Distro
 ### Create the Layer Directory Structure
 ```bash
 mkdir -p meta-info-distro/conf/distro 
@@ -168,7 +158,7 @@ VIRTUAL-RUNTIME_initscripts = " systemd-compat-units"
 
 ---
 
-## Audio Distro
+## Create Audio Distro
 ### Create the Layer Directory Structure
 ```bash
 mkdir -p meta-audio-distro/conf/distro
@@ -217,69 +207,6 @@ LOCALCONF_VERSION="2"
 # add poky sanity bbclass
 INHERIT += "poky-sanity"
 ```
-
----
-
-## Image Recipe: `ivi-test-image.bb`
-### Create Directory Structure
-```bash
-mkdir -p meta-IVI/recipes-core/images
-touch meta-IVI/recipes-core/images/ivi-test-image.bb
-```
-
-### Define Image Recipe
-```bash
-# Base this image on rpi-test-image
-require recipes-core/images/rpi-test-image.bb
-
-# Summary of the Image
-SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Recipes"
-
-# Inherit necessary classes
-inherit audio
-
-
-### IMAGE INSTALLATION ###
-IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
-
-# if Distro ?= "infotainment"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
-
-# if Distro ?= "audio"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
-INHERIT:append:audio = " qmake5"
-
-### IMAGE_FEATURES ###
-##########################################################
-## 1. IMAGE_INSTALL --> ssh                             ##
-## 2. do_rootfs -->                                     ##
-##    - allow root access through ssh                   ##
-##    - access root through ssh using empty password    ##
-##########################################################
-IMAGE_FEATURES:append=" ssh-server-openssh"
-
-### MACHINE_FEATURES ###
-MACHINE_FEATURES:append=" bluetooth wifi alsa"
-```
-**Base Image** 
-`require`: Defines the core structure of the image by inheriting from an existing base image `rpi-test-image`.
-
-**Inheritance** 
-`inherit`: Some images inherit special classes that modify their behavior 
-
-```bash 
-inherit audio
-``` 
-
-**Package Installation** 
-`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
-
-**Image Features** 
-`IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
-
-
-**Machine Features** 
-`MACHINE_FEATURES`: Defines hardware-specific features available for the target machine `alsa`, `wifi`, `bluetooth`.
 
 ---
 
@@ -616,6 +543,69 @@ do_install:append() {
     mv ${D}/usr/etc ${D}/etc
 }
 ```
+
+---
+
+## Create the Image Recipe: `ivi-test-image.bb`
+### Create Directory Structure
+```bash
+mkdir -p meta-IVI/recipes-core/images
+touch meta-IVI/recipes-core/images/ivi-test-image.bb
+```
+
+### Define Image Recipe
+```bash
+# Base this image on rpi-test-image
+require recipes-core/images/rpi-test-image.bb
+
+# Summary of the Image
+SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Recipes"
+
+# Inherit necessary classes
+inherit audio
+
+
+### IMAGE INSTALLATION ###
+IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
+
+# if Distro ?= "infotainment"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
+
+# if Distro ?= "audio"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
+INHERIT:append:audio = " qmake5"
+
+### IMAGE_FEATURES ###
+##########################################################
+## 1. IMAGE_INSTALL --> ssh                             ##
+## 2. do_rootfs -->                                     ##
+##    - allow root access through ssh                   ##
+##    - access root through ssh using empty password    ##
+##########################################################
+IMAGE_FEATURES:append=" ssh-server-openssh"
+
+### MACHINE_FEATURES ###
+MACHINE_FEATURES:append=" bluetooth wifi alsa"
+```
+**Base Image** 
+`require`: Defines the core structure of the image by inheriting from an existing base image `rpi-test-image`.
+
+**Inheritance** 
+`inherit`: Some images inherit special classes that modify their behavior 
+
+```bash 
+inherit audio
+``` 
+
+**Package Installation** 
+`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
+
+**Image Features** 
+`IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
+
+
+**Machine Features** 
+`MACHINE_FEATURES`: Defines hardware-specific features available for the target machine `alsa`, `wifi`, `bluetooth`.
 
 ---
 
