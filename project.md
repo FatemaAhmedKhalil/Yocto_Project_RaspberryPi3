@@ -50,7 +50,7 @@ DL_DIR ?= "${TOPDIR}/../downloads"
 BB_NUMBER_THREADS = "${@bb.utils.cpu_count()//2}"
 PARALLEL_MAKE = "-j 4"
 ```
-- **`MACHINE`** → Specifies target hardware.
+- **`MACHINE`** → Raspberry Pi 3 (32 bits) as a target hardware.
 - **`DL_DIR`** → Shared download directory.
 - **`BB_NUMBER_THREADS & PARALLEL_MAKE`** → Optimize build using multiple CPU cores.
 - **`bb.utils.cpu_count()`** → BitBake utility function that returns the number of CPU cores available on the system.  
