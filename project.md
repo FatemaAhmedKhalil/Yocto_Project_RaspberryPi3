@@ -238,16 +238,16 @@ SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Rec
 # Inherit necessary classes
 inherit audio
 
+
 ### IMAGE INSTALLATION ###
 IMAGE_INSTALL:append=" helloworld openssh nano"
 
-# Conditional installation based on DISTRO_FEATURES
+# if Distro ?= "infotainment"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
 
-# Ensure required Qt tools for development
-INHERIT:append:audio=" qmake5 qmake5_paths pkgconfig"
-
+# if Distro ?= "audio"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qt-creator qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
+INHERIT:append:audio = " qmake5"
 
 ### IMAGE_FEATURES ###
 ##########################################################
