@@ -5,7 +5,7 @@ This guide provides a step-by-step breakdown of The Project.
 
 ## BitBake 
 1. **`build/conf/bblayers.conf`** → Specifies the layers included in the build, like `meta-openembedded` and `meta-yocto`.
-2. **`build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`, `IMAGE_FSTYPES`).
+2. **`build/conf/local.conf`** → Contains user-specific settings (e.g., `MACHINE`, `DISTRO`).
 3. **`meta/conf/layer.conf`** → Defines how BitBake processes each layer, including priorities and dependencies.
 
 ## BitBake Layers
@@ -19,7 +19,7 @@ This guide provides a step-by-step breakdown of The Project.
 - **Custom Layers:**
   - **`meta-info-distro`** → Infotainment distribution configurations.
   - **`meta-audio-distro`** → Audio distribution configurations.
-  - **`meta-IVI`** → Contains an image recipe with a C++ application and Nano editor.
+  - **`meta-IVI`** → Contains an image recipe with a C++ application, Nano editor and VSOMEIP.
 
 ---
 
@@ -239,8 +239,12 @@ inherit audio
 
 ### IMAGE_INSTALL ###
 IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
+
 # if DISTRO = "infotainment"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", "rpi-play", " ", d)}"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
+
+# if DISTRO = "audio"
+INHERIT:append:audio = " qtfeatures"
 
 ### IMAGE_FEATURES ###
 ##########################################################
@@ -259,8 +263,10 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 
 **Inheritance** 
 `inherit`: Some images inherit special classes that modify their behavior 
+
 ```bash 
 inherit audio
+`INHERIT:append:audio`= " qtfeatures"  #inherit qt classes only if the distro is `audio`
 ``` 
 
 **Package Installation** 
