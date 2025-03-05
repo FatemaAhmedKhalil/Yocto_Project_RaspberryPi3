@@ -244,7 +244,7 @@ IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
 
 # if DISTRO = "audio"
-INHERIT:append:audio = " qtfeatures"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols", " ", d)}"
 
 ### IMAGE_FEATURES ###
 ##########################################################
@@ -266,7 +266,6 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 
 ```bash 
 inherit audio
-INHERIT:append:audio = " qtfeatures"  #inherit qt classes only if the distro is `audio`
 ``` 
 
 **Package Installation** 
@@ -399,7 +398,7 @@ Edit the class:
 IMAGE_INSTALL:append = " pavucontrol pulseaudio pulseaudio-module-dbus-protocol pulseaudio-server \
         pulseaudio-module-loopback pulseaudio-module-bluetooth-discover alsa-ucm-conf pulseaudio-module-bluetooth-policy alsa-topology-conf alsa-state alsa-lib alsa-tools \
         pulseaudio-module-bluez5-device pulseaudio-module-bluez5-discover alsa-utils alsa-plugins packagegroup-rpi-test can-utils net-tools gstreamer1.0 \
-        iproute2 iputils bluez5 i2c-tools hostapd iptables"
+        iproute2 iputils libsocketcan bluez5 i2c-tools hostapd iptables"
 ```
 
 ---
