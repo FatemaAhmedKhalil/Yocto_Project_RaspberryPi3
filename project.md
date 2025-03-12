@@ -202,6 +202,10 @@ LOCALCONF_VERSION="2"
 # add poky sanity bbclass
 INHERIT += "poky-sanity"
 ```
+Update `local.conf` to use infotainment distro:
+```bash
+DISTRO ?= "infotainment"
+```
 
 ---
 
@@ -279,6 +283,11 @@ used for copying and setting file permissions.
 - `${D}` `${bindir}` → Installs the compiled binary into `/usr/bin/` inside the target filesystem.
 - `install -m 0755` → Copies the file and sets permissions (rwxr-xr-x).
 
+Build the Recipe:
+```bash
+bitbake helloworld
+```
+
 ---
 
 ## Integrate Nano
@@ -306,6 +315,10 @@ Navigate to the WORKDIR path.
 Run autogen.sh to generate the configure script:
 ```bash
 ./autogen.sh
+bitbake nano
+```
+Build the Recipe:
+```bash
 bitbake nano
 ```
 
@@ -489,12 +502,10 @@ EXTRA_OEMAKE:append = " LDFLAGS='${TARGET_LDFLAGS}'"
 # addtask do_recipesysroot_main before do_configure
 
 ```
-Rebuild `rpi-play` with the Patched CMakeLists.txt and Dependencies: 
+Build `rpi-play` with the Patched CMakeLists.txt and Dependencies: 
 ```bash
-bitbake -c cleanall rpi-play
 bitbake rpi-play
 ```
-
 ---
 
 ## Integrate VSOMEIP
@@ -539,6 +550,11 @@ do_install:append() {
 }
 ```
 
+Bitbake the Recipe:
+```bash
+bitbake vsomeip
+```
+
 ---
 
 ## Create the Image Recipe: `ivi-test-image.bb`
@@ -567,8 +583,8 @@ IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
 
 # if Distro ?= "audio"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase qtdeclarative qtquickcontrols qtquickcontrols2 qtgraphicaleffects qtmultimedia qtwebsockets qttools", " ", d)}"
-INHERIT:append:audio = " qmake5"
+INHERIT:append:audio = " populate_sdk_qt5"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
 
 ### IMAGE_FEATURES ###
 ##########################################################
@@ -605,7 +621,7 @@ inherit audio
 ---
 
 ## Building an Image
-Choose the Desired Distro and Run: 
+Choose the Desired Distro `audio` or `infotainment` and Run: 
 ```bash
 bitbake ivi-test-image
 ```
