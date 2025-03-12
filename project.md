@@ -105,8 +105,6 @@ SDKPATHINSTALL = "/opt/${DISTRO}/${SDK_VERSION}"
 # infotainment --> INFOTAINMENT
 
 INFOTAINMENT_DEFAULT_DISTRO_FEATURES = "largefile opengl ptest multiarch vulkan x11 bluez5 bluetooth wifi qt5 info"
-INFOTAINMENT_DEFAULT_EXTRA_RDEPENDS = "packagegroup-core-boot"
-INFOTAINMENT_DEFAULT_EXTRA_RRECOMMENDS = "kernel-module-af-packet"
 
 # TODO: to be org.
 
@@ -187,13 +185,10 @@ SDKPATHINSTALL = "/opt/${DISTRO}/${SDK_VERSION}"
 # audio --> AUDIO
 
 AUDIO_DEFAULT_DISTRO_FEATURES = "largefile opengl ptest multiarch vulkan bluez5 bluetooth wifi audio_only"
-AUDIO_DEFAULT_EXTRA_RDEPENDS = "packagegroup-core-boot"
-AUDIO_DEFAULT_EXTRA_RRECOMMENDS = "kernel-module-af-packet"
 
 # TODO: to be org.
 
 DISTRO_FEATURES ?= "${DISTRO_FEATURES_DEFAULT} ${AUDIO_DEFAULT_DISTRO_FEATURES} userland"
-
 
 # prefered version for packages.
 PREFERRED_VERSION_linux-yocto ?= "5.15%"
