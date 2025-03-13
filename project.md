@@ -310,12 +310,11 @@ Find the WORKDIR path:
 ```bash
 bitbake -e nano | grep -i "^WORKDIR="
 ```
-Navigate to the WORKDIR path.
+Navigate to the WORKDIR\git path.
 
 Run autogen.sh to generate the configure script:
 ```bash
 ./autogen.sh
-bitbake nano
 ```
 Build the Recipe:
 ```bash
