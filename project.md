@@ -151,7 +151,6 @@ DISTRO_FEATURES:append = " systemd"
 # select systemd as init manager 
 VIRTUAL-RUNTIME_init_manager = " systemd"
 VIRTUAL-RUNTIME_initscripts = " systemd-compat-units"
-# VIRTUAL-RUNTIME_dev_manager = " busybox-mdev"
 ```
 
 ---
