@@ -203,7 +203,7 @@ INHERIT += "poky-sanity"
 ```
 Update `local.conf` to use infotainment distro:
 ```bash
-DISTRO ?= "infotainment"
+DISTRO ?= "audio"
 ```
 
 ---
