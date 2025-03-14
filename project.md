@@ -313,7 +313,7 @@ Find the WORKDIR path:
 ```bash
 bitbake -e nano | grep -i "^WORKDIR="
 ```
-Navigate to the WORKDIR/git path.
+Navigate to the `WORKDIR/git` path.
 
 Run autogen.sh to generate the configure script:
 ```bash
@@ -627,7 +627,7 @@ inherit audio
 ---
 
 ## Building an Image
-Choose the Desired Distro `audio` or `infotainment` and Run: 
+Choose the Desired Distro `audio` or `infotainment` in `local.conf` and Run: 
 ```bash
 bitbake ivi-test-image
 ```
