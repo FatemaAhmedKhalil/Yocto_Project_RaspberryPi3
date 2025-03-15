@@ -578,11 +578,8 @@ inherit audio
 IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 
 # if Distro ?= "infotainment"
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
-
-# if Distro ?= "audio"
-inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5", "", d)}
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", d)}
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard"", " ", d)}"
 
 
 ### IMAGE_FEATURES ###
@@ -607,22 +604,17 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 ```bash 
 inherit audio
 ``` 
-- Inherit populate_sdk_qt5 classes for `audio` distro to create a Qt5 SDK.
+- Inherit populate_sdk_qt5 classes for `infotainment` distro to create a Qt5 SDK.
 ```bash
-inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5", "", d)}`:
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", d)}
 ```
 
 **Package Installation** 
 `IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `openssh`, `vsomeip`.
 
-- Install `rpi-play` for `infotainment` distro.
+- Install `rpi-play` and `qt pachakges`for `infotainment` distro.
 ```bash
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
-```
-- Install `qt pachakges` for `audio` distro.
-```bash
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
-```
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard"", " ", d)}"```
 
 **Image Features** 
 `IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
@@ -640,7 +632,7 @@ bitbake ivi-test-image
 ---
 
 ## Creating QT App `qt_helloworld`
-Edit `local.conf` with `Distro ?= "audio"`
+Edit `local.conf` with `Distro ?= "infotainment"`
 
 Build the SDK:
 ```bash
@@ -652,8 +644,8 @@ cd /tmp-glibc/deploy/sdk/
 ```
 Set up the development environment by sourcing the environment setup script:
 ```bash
-sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-toolchain-1.0.sh
-source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
+sudo ./infotainment-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-toolchain-1.0.sh
+source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
 - In Device:
@@ -712,8 +704,8 @@ qt_helloworld.cpp:1:10: fatal error: QApplication: No such file or directory
 ```
 To fix it open the `QT.pro` file and add this:
 ```
-INCLUDEPATH += /opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/include/QtWidgets
-LIBS += -L/opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/lib -lQt5Widgets
+INCLUDEPATH += /opt/infotainment/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/include/QtWidgets
+LIBS += -L/opt/infotainment/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/lib -lQt5Widgets
 ```
 Save and Run:
 ```bash
