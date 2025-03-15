@@ -581,8 +581,9 @@ IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
 
 # if Distro ?= "audio"
-INHERIT:append:audio = " populate_sdk_qt5"
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5", "", d)}
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
+
 
 ### IMAGE_FEATURES ###
 ##########################################################
