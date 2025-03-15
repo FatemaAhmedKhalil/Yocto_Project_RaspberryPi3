@@ -646,8 +646,8 @@ Set up the development environment by sourcing the environment setup script:
 sudo ./infotainment-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-toolchain-1.0.sh
 source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
-# Set Up & Build Qt Application
-- In Device:
+### Set Up & Build Qt Application
+- *In Device:*
   
 1- Set the RPI configurations to test the connection:
 
@@ -659,7 +659,7 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 
 
 
-- In Build & Run:
+- *In Build & Run:*
   
 1- Configure C and C++ Compilers paths:
 
