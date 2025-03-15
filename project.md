@@ -1,4 +1,4 @@
-## Overview
+1## Overview
 This guide provides a step-by-step breakdown of The Project.
 
 ---
@@ -657,31 +657,33 @@ source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
 - in Device:
-set the RPI configurations to test the connection:
+  
+1- set the RPI configurations to test the connection:
 
 ![QT](Images/6.png)
 
-The Test Result:
+2- The Test Result:
 
 ![QT](Images/7.png)
 
 
 
 - in Build & Run:
-configure C and C++ compilers paths:
+  
+1- configure C and C++ compilers paths:
 
 ![QT](Images/3.png)
 ![QT](Images/4.png)
 
-configure debbuger path:
+2- configure debbuger path:
 
 ![QT](Images/5.png)
 
-configure QT version qmake path:
+3- configure QT version qmake path:
 
 ![QT](Images/2.png)
 
-finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
+4- finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
 
 ![QT](Images/1.png)
 
