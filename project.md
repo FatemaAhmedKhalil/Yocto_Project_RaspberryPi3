@@ -649,6 +649,7 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 ### Set Up & Build Qt Application
 - **In Device:**
 - My Raspberry Pi 3 has an IP 192.168.1.5 in my network.
+
 1- Set the RPI configurations to test the connection:
 
 ![QT](Images/6.png)
