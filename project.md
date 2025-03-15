@@ -603,11 +603,11 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 **Inheritance** 
 `inherit`: Some images inherit special classes that modify their behavior 
 
-inherit `audio.bbclass`
+- Inherit `audio.bbclass`.
 ```bash 
 inherit audio
 ``` 
-inherit populate_sdk_qt5 classes for `audio` distro to create a Qt5 SDK.
+- Inherit populate_sdk_qt5 classes for `audio` distro to create a Qt5 SDK.
 ```bash
 inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5", "", d)}`:
 ```
@@ -615,11 +615,11 @@ inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5"
 **Package Installation** 
 `IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `vsomeip`.
 
-install `rpi-play` for `infotainment` distro:
+- Install `rpi-play` for `infotainment` distro.
 ```bash
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
 ```
-install `qt pachakges` for `audio` distro:
+- Install `qt pachakges` for `audio` distro.
 ```bash
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
 ```
@@ -732,7 +732,7 @@ scp qt_helloworld root@192.168.1.5:/home/pi/
 In Raspberry Pi 3 navigate to:
 ```bash
 cd /home/pi/
-./qt-hello-world
+./qt-helloworld
 ``` 
 Make Sure the App is Running:
 ```bash
