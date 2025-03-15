@@ -570,17 +570,18 @@ require recipes-core/images/rpi-test-image.bb
 # Summary of the Image
 SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Recipes"
 
-# Inherit necessary classes
-inherit audio
-
+### MACHINE_FEATURES ###
+MACHINE_FEATURES:append=" bluetooth wifi alsa"
 
 ### IMAGE INSTALLATION ###
-IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
+IMAGE_INSTALL:append=" helloworld openssh nano "
 
 # if Distro ?= "infotainment"
 inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", d)}
 IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
 
+# if Distro ?= "audio"
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "audio", "", d)}
 
 ### IMAGE_FEATURES ###
 ##########################################################
@@ -590,9 +591,6 @@ IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play
 ##    - access root through ssh using empty password    ##
 ##########################################################
 IMAGE_FEATURES:append=" ssh-server-openssh"
-
-### MACHINE_FEATURES ###
-MACHINE_FEATURES:append=" bluetooth wifi alsa"
 ```
 **Base Image** 
 `require`: Defines the core structure of the image by inheriting from an existing base image `rpi-test-image`.
@@ -600,9 +598,9 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 **Inheritance** 
 `inherit`: Some images inherit special classes that modify their behavior 
 
-- Inherit `audio.bbclass`.
+- Inherit `audio.bbclass` for `audio` distro.
 ```bash 
-inherit audio
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "audio", "", d)}
 ``` 
 - Inherit populate_sdk_qt5 classes for `infotainment` distro to create a Qt5 SDK.
 ```bash
