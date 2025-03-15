@@ -688,7 +688,6 @@ source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ![QT](Images/1.png)
 
 
- **Add this Qt main.cpp**
 from file make a new project and write in `main.cpp`:
 ```cpp
 #include <QApplication>
