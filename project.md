@@ -208,10 +208,6 @@ DISTRO ?= "audio"
 
 ---
 
-## Creating QT Application
-
----
-
 ## Creating Cpp App Recipe `helloworld`
 ```bash
 mkdir -p meta-IVI/recipes-native-cpp/helloworld
@@ -556,10 +552,6 @@ Bitbake the Recipe:
 ```bash
 bitbake vsomeip
 ```
-
----
-
-## Creating VSOMEIP Application
 
 ---
 
