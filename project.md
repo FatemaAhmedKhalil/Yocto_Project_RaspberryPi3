@@ -612,7 +612,8 @@ inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", 
 
 - Install `rpi-play` and `qt pachakges`for `infotainment` distro.
 ```bash
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard"", " ", d)}"```
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard"", " ", d)}"
+```
 
 **Image Features** 
 `IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
