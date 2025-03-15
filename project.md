@@ -670,7 +670,8 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 
 ![QT](Images/5.png)
 
-3- make sure of QT version qmake path:
+3- make sure of QT version includes qmake path.
+
 4- Finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
 
 ![QT](Images/1.png)
