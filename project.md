@@ -579,7 +579,7 @@ IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 
 # if Distro ?= "infotainment"
 inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", d)}
-IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard"", " ", d)}"
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
 
 
 ### IMAGE_FEATURES ###
