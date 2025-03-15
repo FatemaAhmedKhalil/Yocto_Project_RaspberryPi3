@@ -656,18 +656,33 @@ sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-to
 source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
+- in Device:
+set the RPI configurations to test the connection:
+
+![QT](Images/6.png)
+
+The Test Result:
+
+![QT](Images/7.png)
+
+
+
 - in Build & Run:
 configure C and C++ compilers paths:
+
 ![QT](Images/3.png)
 ![QT](Images/4.png)
 
 configure debbuger path:
+
 ![QT](Images/5.png)
 
 configure QT version qmake path:
+
 ![QT](Images/2.png)
 
-finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger: 
+finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
+
 ![QT](Images/1.png)
 
 
@@ -706,7 +721,7 @@ navigate to the binary location and run:
 cd build-qt_helloworld-raspberrypi3-Debug
 scp qt_helloworld root@192.168.1.5:/home/pi/
 ```
-in Raspberry Pi 3 with ip 192.168.1.5 in my network
+in Raspberry Pi 3 navigate to:
 ```bash
 cd /home/pi/
 ./qt-hello-world
