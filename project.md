@@ -640,25 +640,25 @@ bitbake ivi-test-image
 ---
 
 ## Creating QT App `qt_helloworld`
-edit `local.conf` with `Distro ?= "audio"`
+Edit `local.conf` with `Distro ?= "audio"`
 
-build the SDK:
+Build the SDK:
 ```bash
 bitbake -c populate_sdk ivi-test-image
 ```
-from `build_raspberrypi3-32` directory navigate to `sdk`:
+From `build_raspberrypi3-32` directory navigate to `sdk`:
 ```bash
 cd /tmp-glibc/deploy/sdk/
 ```
-set up the development environment by sourcing the environment setup script:
+Set up the development environment by sourcing the environment setup script:
 ```bash
 sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-toolchain-1.0.sh
 source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
-- in Device:
+- In Device:
   
-1- set the RPI configurations to test the connection:
+1- Set the RPI configurations to test the connection:
 
 ![QT](Images/6.png)
 
@@ -668,27 +668,27 @@ source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 
 
 
-- in Build & Run:
+- In Build & Run:
   
-1- configure C and C++ compilers paths:
+1- Configure C and C++ Compilers paths:
 
 ![QT](Images/3.png)
 ![QT](Images/4.png)
 
-2- configure debbuger path:
+2- Configure Debbuger path:
 
 ![QT](Images/5.png)
 
-3- configure QT version qmake path:
+3- Configure QT version qmake path:
 
 ![QT](Images/2.png)
 
-4- finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
+4- Finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
 
 ![QT](Images/1.png)
 
 
-from file make a new project and write in `main.cpp`:
+From file make a new project and write in `main.cpp`:
 ```cpp
 #include <QApplication>
 #include <QPushButton>
@@ -700,39 +700,45 @@ int main(int argc, char *argv[]) {
     return app.exec();
 }
 ```
-save and run:
+Save and Run:
 ```bash
 qmake -project
+qmake
+make
 ```
-open the `QT.pro` file and add this:
+The previous build will fail with the following error:
+```plaintext
+qt_helloworld.cpp:1:10: fatal error: QApplication: No such file or directory
+```
+To fix it open the `QT.pro` file and add this:
 ```
 INCLUDEPATH += /opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/include/QtWidgets
 LIBS += -L/opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/lib -lQt5Widgets
 ```
-save and run:
+Save and Run:
 ```bash
 qmake
 make
 ```
 
 **Securely copies (scp) the qt_helloworld binary from host PC to Raspberry Pi**
-- my Raspberry Pi 3 has an IP 192.168.1.5 in my network.
+- My Raspberry Pi 3 has an IP 192.168.1.5 in my network.
 
-navigate to the binary location and run:
+Navigate to the binary location and run:
 ```bash
 cd build-qt_helloworld-raspberrypi3-Debug
 scp qt_helloworld root@192.168.1.5:/home/pi/
 ```
-in Raspberry Pi 3 navigate to:
+In Raspberry Pi 3 navigate to:
 ```bash
 cd /home/pi/
 ./qt-hello-world
 ``` 
-make sure the app is running
+Make Sure the App is Running:
 ```bash
 ps | grep qt_helloworld
 ```
-should appear:
+Should See:
 ```plaintext
 root@raspberrypi3:~# ps | grep qt_helloworld
   542 root      2304 S    grep qt_helloworld
