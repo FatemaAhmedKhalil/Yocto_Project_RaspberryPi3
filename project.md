@@ -1,4 +1,4 @@
-1## Overview
+## Overview
 This guide provides a step-by-step breakdown of The Project.
 
 ---
