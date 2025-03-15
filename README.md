@@ -19,9 +19,9 @@
 - Version: 5.15.x
 ## Distributions:
 **Distribution 1:**
-- Excludes Meta-qt5.
+- Includes Meta-qt5.
 - Uses systemd as the init system.
   
 **Distribution 2:**
-- Includes Meta-qt5.
+- Excludes Meta-qt5.
 - Uses sysvinit as the init system.
