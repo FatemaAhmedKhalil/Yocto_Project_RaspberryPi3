@@ -603,16 +603,29 @@ MACHINE_FEATURES:append=" bluetooth wifi alsa"
 **Inheritance** 
 `inherit`: Some images inherit special classes that modify their behavior 
 
+inherit `audio.bbclass`
 ```bash 
 inherit audio
 ``` 
+inherit populate_sdk_qt5 classes for `audio` distro to create a Qt5 SDK.
+```bash
+inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5", "", d)}`:
+```
 
 **Package Installation** 
-`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `rpi-play`.
+`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `vsomeip`.
+
+install `rpi-play` for `infotainment` distro:
+```bash
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "info", " rpi-play", " ", d)}"
+```
+install `qt pachakges` for `audio` distro:
+```bash
+IMAGE_INSTALL:append="${@bb.utils.contains("DISTRO_FEATURES", "audio_only", " qtbase-examples qtquickcontrols qtbase-plugins libsocketcan qtquickcontrols2 qtgraphicaleffects qtmultimedia qtserialbus qtquicktimeline qtvirtualkeyboard", " ", d)}"
+```
 
 **Image Features** 
 `IMAGE_FEATURES`: Defines additional capabilities like SSH, debugging tools, or package management `ssh-server-openssh`, `debug-tweaks`.
-
 
 **Machine Features** 
 `MACHINE_FEATURES`: Defines hardware-specific features available for the target machine `alsa`, `wifi`, `bluetooth`.
@@ -623,4 +636,77 @@ inherit audio
 Choose the Desired Distro `audio` or `infotainment` in `local.conf` and Run: 
 ```bash
 bitbake ivi-test-image
+```
+---
+
+## Creating QT App `qt_helloworld`
+edit `local.conf` with `Distro ?= "audio"`
+
+build the SDK:
+```bash
+bitbake -c populate_sdk ivi-test-image
+```
+from `build_raspberrypi3-32` directory navigate to `sdk`:
+```bash
+cd /tmp-glibc/deploy/sdk/
+```
+set up the development environment by sourcing the environment setup script:
+```bash
+sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-toolchain-1.0.sh
+source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
+```
+# Set Up & Build Qt Application
+ **Add this Qt main.cpp**
+```qt
+#include <QApplication>
+#include <QPushButton>
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    QPushButton hello("Hello, Qt!");
+    hello.show();
+    return app.exec();
+}
+```
+save and run:
+```bash
+qmake -project
+```
+edit the `QT.pro` file:
+```bash
+nano qt_helloworld.pro
+```
+add this:
+```
+INCLUDEPATH += /opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/include/QtWidgets
+LIBS += -L/opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/lib -lQt5Widgets
+```
+save and run:
+```bash
+qmake
+make clean
+make
+```
+
+**Securely copies (scp) the qt_helloworld binary from host PC to Raspberry Pi**
+- my Raspberry Pi 3 has an IP 192.168.1.5 in my network.
+
+navigate to the binary location and run:
+```bash
+cd build-qt_helloworld-raspberrypi3-Debug
+scp qt_helloworld root@192.168.1.5:/home/pi/
+```
+in Raspberry Pi 3 with ip 192.168.1.5 in my network
+```bash
+cd /home/pi/
+./qt-hello-world
+``` 
+make sure the app is running
+```bash
+ps | grep qt_helloworld
+```
+should appear:
+```plaintext
+root@raspberrypi3:~# ps | grep qt_helloworld
+  542 root      2304 S    grep qt_helloworld
 ```
