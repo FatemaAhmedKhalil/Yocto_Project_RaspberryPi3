@@ -656,6 +656,8 @@ sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-to
 source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
+![QT](Images/1.png)
+
  **Add this Qt main.cpp**
 ```qt
 #include <QApplication>
@@ -672,11 +674,7 @@ save and run:
 ```bash
 qmake -project
 ```
-edit the `QT.pro` file:
-```bash
-nano qt_helloworld.pro
-```
-add this:
+open the `QT.pro` file and add this:
 ```
 INCLUDEPATH += /opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/include/QtWidgets
 LIBS += -L/opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/lib -lQt5Widgets
@@ -684,7 +682,6 @@ LIBS += -L/opt/audio/1.0/sysroots/cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi/usr/l
 save and run:
 ```bash
 qmake
-make clean
 make
 ```
 
