@@ -647,7 +647,7 @@ sudo ./infotainment-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberr
 source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 ### Set Up & Build Qt Application
-- *In Device:*
+- **In Device:**
   
 1- Set the RPI configurations to test the connection:
 
@@ -659,7 +659,7 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 
 
 
-- *In Build & Run:*
+- **In Build & Run:**
   
 1- Configure C and C++ Compilers paths:
 
@@ -670,7 +670,7 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 
 ![QT](Images/5.png)
 
-3- make sure of QT version includes qmake path.
+3- make sure that QT version includes qmake path.
 
 4- Finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
 
