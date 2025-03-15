@@ -613,7 +613,7 @@ inherit ${@bb.utils.contains("DISTRO_FEATURES", "audio_only", "populate_sdk_qt5"
 ```
 
 **Package Installation** 
-`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `helloworld`, `openssh`, `vsomeip`.
+`IMAGE_INSTALL`: Specifies additional software packages to be included in the image `nano`, `helloworld`, `openssh`, `vsomeip`.
 
 - Install `rpi-play` for `infotainment` distro.
 ```bash
