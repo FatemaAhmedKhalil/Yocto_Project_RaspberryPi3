@@ -673,7 +673,7 @@ source /opt/infotainment/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-
 
 3- make sure that QT version includes qmake path.
 
-qmake location: `/opt/infotainment/1.0/sysroots/x86_64-bulletSDK-linux/usr/bin/qmake`
+- qmake location: `/opt/infotainment/1.0/sysroots/x86_64-bulletSDK-linux/usr/bin/qmake`
 
 4- Finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger:
 
