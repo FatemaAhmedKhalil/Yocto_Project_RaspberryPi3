@@ -656,7 +656,20 @@ sudo ./audio-glibc-x86_64-ivi-test-image-cortexa7t2hf-neon-vfpv4-raspberrypi3-to
 source /opt/audio/1.0/environment-setup-cortexa7t2hf-neon-vfpv4-oe-linux-gnueabi
 ```
 # Set Up & Build Qt Application
+- in Build & Run:
+configure C and C++ compilers paths:
+![QT](Images/3.png)
+![QT](Images/4.png)
+
+configure debbuger path:
+![QT](Images/5.png)
+
+configure QT version qmake path:
+![QT](Images/2.png)
+
+finally cofigure the Kit with sysroot path, QT mkspec path, Device, QT version, Compiler and Debbuger: 
 ![QT](Images/1.png)
+
 
  **Add this Qt main.cpp**
 ```qt
