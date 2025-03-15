@@ -710,7 +710,7 @@ qmake
 make
 ```
 
-**Securely copies (scp) the qt_helloworld binary from host PC to Raspberry Pi**
+### Securely copies (scp) the qt_helloworld binary from host PC to Raspberry Pi
 - My Raspberry Pi 3 has an IP 192.168.1.5 in my network.
 
 Navigate to the binary location and run:
