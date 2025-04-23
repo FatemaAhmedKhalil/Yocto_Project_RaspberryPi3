@@ -580,7 +580,7 @@ SUMMARY="IVI Testing Image That Include RPI Functions and helloworld Package Rec
 MACHINE_FEATURES:append=" bluetooth wifi alsa"
 
 ### IMAGE INSTALLATION ###
-IMAGE_INSTALL:append=" helloworld openssh nano "
+IMAGE_INSTALL:append=" helloworld openssh nano vsomeip"
 
 # if Distro ?= "infotainment"
 inherit ${@bb.utils.contains("DISTRO_FEATURES", "info", "populate_sdk_qt5", "", d)}
