@@ -510,7 +510,7 @@ bitbake rpi-play
 create the following directory structure inside your custom layer:
 ```bash
 mkdir -p meta-IVI/recipes-connectivity/vsomeip
-recipetool create -o vsomeip_1.0.bb  https://github.com/COVESA/vsomeip.git
+recipetool create -o vsomeip_1.0.bb -B vsomeip_3.5.3 https://github.com/COVESA/vsomeip.git
 ```
 Edit `vsomeip_1.0.bb`:
 ```bash
@@ -527,15 +527,17 @@ Edit `vsomeip_1.0.bb`:
 LICENSE = "Unknown"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=9741c346eef56131163e13b9db1241b3"
 
-SRC_URI = "git://github.com/COVESA/vsomeip.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/COVESA/vsomeip.git;protocol=https;branch=vsomeip_3.5.3"
 
 # Modify these as desired
 PV = "1.0+git${SRCPV}"
-SRCREV = "d58421766206ec7fa2084d2fe01841b5b0d8aeb5"
+SRCREV = "429fac5a99c2decefc91ccc5962051ec281b506b"
 
 S = "${WORKDIR}/git"
 
-# NOTE: unable to map the following CMake package dependencies: benchmark Doxygen
+# NOTE: unable to map the following CMake package dependencies: Doxygen benchmark
+# NOTE: unable to map the following pkg-config dependencies: libsystemd
+# (this is based on recipes that have previously been built and packaged)
 DEPENDS = " boost"
 
 inherit cmake pkgconfig
@@ -543,8 +545,12 @@ inherit cmake pkgconfig
 # Specify any options you want to pass to cmake using EXTRA_OECMAKE:
 EXTRA_OECMAKE = ""
 
+# Ignore do_package_qa
+do_package_qa[noexec]="1"
 do_install:append() {
-    mv ${D}/usr/etc ${D}/etc
+    # Remove the unwanted etc directory and its contents
+    rm -rf ${D}${prefix}/etc/vsomeip
+    rmdir --ignore-fail-on-non-empty ${D}${prefix}/etc
 }
 ```
 
